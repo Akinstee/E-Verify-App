@@ -21,12 +21,15 @@ class Company extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
+    
+     protected $table = 'companies';
+     
+     protected $fillable = [
         'name',
         'email',
-        'password',
         'organization',
         'company_size',
+        'password',
         'logo',
     ];
 

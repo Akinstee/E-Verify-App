@@ -20,8 +20,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/company/signup', [CompanyController::class, 'signup']);
+//Route::post('/company/signup', [CompanyController::class, 'signup']);
 
 // route::get('company/signup', function(){
 //     return 'first correct code';
 // });
+//Route::post('/signup', [CompanyController::class, 'signup']);
+
+// Route::get('register', function(){
+//     return 'code war';
+// });
+
+//Route::post('company/signup', [CompanyController::class, 'register']);
+
+Route::post('company/signup', [CompanyController::class, 'signUp']);
+
+// Route::post('/company/signup', function (Request $request) {
+//     \Log::info('Received signup request', $request->all());
+//     return response()->json(['message' => 'Route hit successfully']);
+// });
+
+// Route::post('/company/signup', function() {
+//     return response()->json(['message' => 'Route hit successfully']);
+// });
+
+//Route::post('/company/signup', [CompanyController::class, 'store']);

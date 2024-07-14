@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('organization');
+            $table->string('company_size');
             $table->string('password');
-            $table->string('organization')->nullable();
-            $table->string('company_size')->nullable();
-            $table->string('logo')->nullable();  // Column for company logo
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }

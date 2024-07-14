@@ -2,39 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Models\Company;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
-    public function register(Request $request)
+    public function signUp(Request $request)
     {
-        $validated = $request->validate([
+        // Validation
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:companies',
-            'organization' => 'nullable|string|max:255',
-            'company_size' => 'nullable|string|max:255',
+            'organization' => 'required|string|max:255',
+            'company_size' => 'required|string|max:255',
             'password' => 'required|string|min:8|confirmed',
-            'logo' => 'nullable|image|max:2048',  // Validation for logo
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('logos', 'public');
-        } else {
-            $path = null;
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
-        $company = Company::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'organization' => $validated['organization'],
-            'company_size' => $validated['company_size'],
-            'password' => Hash::make($validated['password']),
-            'logo' => $path,
-        ]);
+        // Store company data
+        $company = new Company();
+        $company->name = $request->name;
+        $company->email = $request->email;
+        $company->organization = $request->organization;
+        $company->company_size = $request->company_size;
+        $company->password = Hash::make($request->password);
 
-        return response()->json($company, 201);
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $company->logo = $logoPath;
+        }
+
+        $company->save();
+
+        return response()->json(['message' => 'Company registered successfully'], 201);
     }
 }
