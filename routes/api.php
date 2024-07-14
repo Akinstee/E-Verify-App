@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Route::post('company/signup', [CompanyController::class, 'register']);
 
 Route::post('company/signup', [CompanyController::class, 'signUp']);
+Route::post('company/signin', [CompanyController::class, 'signIn']);
 
 // Route::post('/company/signup', function (Request $request) {
 //     \Log::info('Received signup request', $request->all());

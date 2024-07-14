@@ -42,4 +42,29 @@ class CompanyController extends Controller
 
         return response()->json(['message' => 'Company registered successfully'], 201);
     }
+
+    public function signIn(Request $request)
+    {
+        // Validation
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $company = Company::where('email', $request->email)->first();
+
+        if (!$company || !Hash::check($request->password, $company->password)) {
+            return response()->json(['message' => 'Invalid email or password'], 401);
+        }
+
+        return response()->json([
+            'message' => 'Company signed in successfully',
+            'company' => $company,
+        ], 200);
+    }
+
 }
