@@ -31,6 +31,11 @@ class Company extends Authenticatable
         'company_size',
         'password',
         'logo',
+        'license', 
+        'issuer', 
+        'business_registration_number', 
+        'year_issued',
+        
     ];
 
     /**
@@ -42,6 +47,21 @@ class Company extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(AdminUser::class);
+    }
+
+    public function licenses()
+    {
+        return $this->hasMany(License::class);
+    }
 
     /**
      * The attributes that should be cast to native types.

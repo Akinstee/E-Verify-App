@@ -1,51 +1,55 @@
-import { useState } from "react";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RegisterationCard from "../components/RegisterationCard";
 import { TiSocialFacebook } from "react-icons/ti";
 import { FaTwitter } from "react-icons/fa";
 import { RiGoogleLine } from "react-icons/ri";
-import axios from "axios";
 import { Link } from "react-router-dom";
-const WorkerSignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+const WorkerSignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", {
-        email,
-        password,
+      const response = await fetch('http://localhost:8000/api/worker/signin', {
+        method: 'POST',
+        body: formData,
       });
-      console.log(response.data);
-      // Handle successful login (e.g., store token, redirect, etc.)
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('User data:', data);
+
+      // Redirect to the worker detail page after successful sign-in
+      navigate('/worker-detail', { state: { worker: data } });
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Error during sign-in:', error);
+      // Handle error (e.g., show error message to the user)
     }
   };
 
   return (
-    <div className="w-[100vw] h-[100vh] lg:pl-[7.5%] flex flex-row items-center nunito justify-center max-w-[100vw] overflow-x-hidden">
+    <div className="w-[100vw] h-[100vh] px-[1rem] lg:px-0 lg:pl-[7.5%] flex flex-row items-center inter justify-center max-w-[100vw] overflow-x-hidden">
       <RegisterationCard>
-        <div className="lg:w-6/12 w-[100%] border px-[1rem] lg:px-12 z-10 flex flex-col justify-center items-start h-[100vh]">
-          <div className="flex items-center gap-12">
-            <img
-              src="https://cdn-icons-png.flaticon.com/128/149/149071.png"
-              className="w-12"
-            />
-            <h1 className="text-xl">Worker Profile</h1>
-          </div>
-
-          <form
-            onSubmit={handleLogin}
-            className="mt-16 w-[100%] flex flex-col gap-5"
-          >
+        <div className="w-[100%] lg:w-6/12 lg:px-12 z-10 flex flex-col justify-center items-start h-[100vh]">
+          <form onSubmit={handleSubmit} className="mt-16 w-[100%] flex flex-col gap-5">
             <div className="flex flex-col relative w-[100%]">
               <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                Email
+                Worker Email
               </span>
               <input
                 className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-1.5"
-                placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -56,17 +60,16 @@ const WorkerSignIn = () => {
                 Password
               </span>
               <input
+                type="password"
                 className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-1.5"
-                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                type="password"
               />
             </div>
 
             <button
               type="submit"
-              className="max-w-[27.5rem] border bg-red-400 text-white py-2 mt-6 rounded-md"
+              className="max-w-[30rem] text-center border bg-red-400 text-white py-2 mt-6 rounded-xl"
             >
               Sign In
             </button>
@@ -82,10 +85,8 @@ const WorkerSignIn = () => {
             </div>
 
             <h1 className="mt-6">
-              Do not have an account?{" "}
-              <Link to="/worker-detail" className="text-blue-400">
-                Sign Up
-              </Link>
+              Already have an account?{" "}
+              <Link to="/worker-detail" className="text-blue-400">Sign in</Link>
             </h1>
           </div>
         </div>

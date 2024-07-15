@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('company_size');
             $table->string('password');
             $table->string('logo')->nullable();
+            $table->string('license')->nullable();
+            $table->string('issuer')->nullable();
+            $table->string('business_registration_number')->nullable();
+            $table->year('year_issued')->nullable();
             $table->timestamps();
         });
     }

@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\WorkerVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,29 +23,30 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-//Route::post('/company/signup', [CompanyController::class, 'signup']);
-
-// route::get('company/signup', function(){
-//     return 'first correct code';
-// });
-//Route::post('/signup', [CompanyController::class, 'signup']);
-
-// Route::get('register', function(){
-//     return 'code war';
-// });
-
-//Route::post('company/signup', [CompanyController::class, 'register']);
 
 Route::post('company/signup', [CompanyController::class, 'signUp']);
 Route::post('company/signin', [CompanyController::class, 'signIn']);
 
-// Route::post('/company/signup', function (Request $request) {
-//     \Log::info('Received signup request', $request->all());
-//     return response()->json(['message' => 'Route hit successfully']);
-// });
 
-// Route::post('/company/signup', function() {
-//     return response()->json(['message' => 'Route hit successfully']);
-// });
+Route::post('worker/signup', [WorkerController::class, 'signUp']);
+Route::post('/worker/signin', [WorkerController::class, 'signIn']);
+Route::get('/worker/{id}', [WorkerController::class, 'show']);
+Route::put('/worker/{id}', [WorkerController::class, 'update']);
+Route::delete('/worker/{id}', [WorkerController::class, 'destroy']);
 
-//Route::post('/company/signup', [CompanyController::class, 'store']);
+
+Route::get('jobs', [JobController::class, 'index']);
+Route::post('jobs', [JobController::class, 'store']);
+Route::get('jobs/{id}', [JobController::class, 'show']);
+Route::put('jobs/{id}', [JobController::class, 'update']);
+Route::delete('jobs/{id}', [JobController::class, 'destroy']);
+
+// Route::post('workers', [WorkerController::class, 'store']);
+// Route::get('workers/{id}', [WorkerController::class, 'show']);
+// Route::put('workers/{id}', [WorkerController::class, 'update']);
+// Route::delete('workers/{id}', [WorkerController::class, 'destroy']);
+
+Route::post('worker-verifications', [WorkerVerificationController::class, 'store']);
+Route::get('worker-verifications/{id}', [WorkerVerificationController::class, 'show']);
+Route::put('worker-verifications/{id}', [WorkerVerificationController::class, 'update']);
+Route::delete('worker-verifications/{id}', [WorkerVerificationController::class, 'destroy']);

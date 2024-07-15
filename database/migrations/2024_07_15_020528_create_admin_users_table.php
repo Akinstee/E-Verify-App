@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('admin_users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('company_id');
             $table->string('name');
+            $table->string('phone_number');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('user_type', ['company', 'worker']);
-            $table->rememberToken();
+            $table->string('gender');
+            $table->string('position');
+            $table->string('address');
             $table->timestamps();
+
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }
 
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('admin_users');
     }
 };
