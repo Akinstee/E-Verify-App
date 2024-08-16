@@ -1,234 +1,111 @@
-import { useState } from "react";
-import RegisterationCard from "../components/RegisterationCard";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 const WorkerDetails = () => {
-  const [tab, setTab] = useState("address");
+  const [tab, setTab] = useState('address');
+  const [formData, setFormData] = useState({
+    address: '',
+    lga: '',
+    state: '',
+    country: '',
+    company_user: '',
+    user_phone: '',
+    user_email: '',
+    gender: '',
+    user_position: '',
+    user_address: '',
+    school: '',
+    school_state: '',
+    degree: '',
+    course: '',
+    start_year: '',
+    end_year: '',
+    still_schooling: false,
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/worker-details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert('Worker details saved successfully');
+        navigate('/dashboard');
+      } else {
+        const errorData = await response.json();
+        alert('Error: ' + errorData.message);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred. Please try again.');
+    }
+  };
+
   return (
-    <div className="w-[100vw] h-[100vh] inter lg:pl-[7.5%] flex flex-row items-center inter justify-center max-w-[100vw] overflow-x-hidden">
-      <RegisterationCard>
-        {tab == "address" ? (
-          <div className="lg:w-6/12 w-[100%] px-[1rem] lg:px-12 z-10 flex flex-col gap-6 justify-center items-start h-[100vh]">
-            <h1 className="text-2xl">Address</h1>
-            {/* <div className='flex flex-col w-[100%]'>
-                                <span className="text-[12px] lg:text-[15px]">Address</span>
-                                <input className='border bg-slate-100 mt-2 lg:mt-3 border-slate-500 rounded-xl text-md px-6 lg:max-w-[30rem] py-2' placeholder='' />
-                            </div> */}
-
-            <div className="flex flex-col relative w-[100%]">
-              <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                Address
-              </span>
-              <input
-                className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                placeholder=""
-              />
+    <div className="w-[100vw] h-[100vh] flex flex-row items-center justify-center max-w-[100vw] overflow-x-hidden">
+      <form onSubmit={handleSubmit} className="w-[90%] lg:w-6/12 p-6 lg:p-12 bg-white rounded-md shadow-md">
+        {tab === 'address' && (
+          <>
+            <h1 className="text-2xl mb-6">Address</h1>
+            <div className="flex flex-col gap-4">
+              <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="lga" value={formData.lga} onChange={handleChange} placeholder="LGA" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="state" value={formData.state} onChange={handleChange} placeholder="State" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="country" value={formData.country} onChange={handleChange} placeholder="Country" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <button type="button" onClick={() => setTab('admin')} className=" bg-red-400 text-white py-2 rounded-md">Next</button>
             </div>
-
-            <div className="flex flex-col relative w-[100%]">
-              <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                LGA
-              </span>
-              <input
-                className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                placeholder=""
-              />
-            </div>
-            <div className="flex flex-col relative w-[100%]">
-              <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                State
-              </span>
-              <input
-                className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                placeholder=""
-              />
-            </div>
-            <div className="flex flex-col relative w-[100%]">
-              <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                Country
-              </span>
-              <input
-                className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                placeholder=""
-              />
-            </div>
-
-            <div className="flex flex-col gap-4 lg:flex-row mt-16 max-w-[30rem] lg:items-center justify-between w-[100%]">
-              <button className="border border-red-400 py-3 px-6 text-[15px] text-red-500 rounded-md">
-                Add new address
-              </button>
-              <button
-                className=" bg-red-400 text-white py-3 px-20 text-[15px] rounded-md"
-                onClick={() => setTab("admin")}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        ) : tab == "admin" ? (
-          <div className="lg:w-6/12 px-[1rem] w-[100%] lg:px-12 z-10 flex flex-col gap-6 justify-center items-start h-[100vh]">
-            <h1 className="text-2xl">Company Admin User</h1>
-            <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Company User
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  User phone no
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  User email
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Gender
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  User Position
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  User Address
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  User Phone no
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-
-            <div className="flex flex-col gap-4 lg:flex-row mt-16 max-w-[30rem] lg:items-center justify-between w-[100%]">
-              <button className="border border-red-400 py-3 px-6 text-[15px] text-red-500 rounded-md">
-                Add new admin
-              </button>
-              <button
-                className=" bg-red-400 text-white py-3 px-20 text-[15px] rounded-md"
-                onClick={() => setTab("education")}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        ) : tab === "education" && (
-          <div className="lg:w-6/12 px-[1rem] w-[100%] lg:px-12 z-10 flex flex-col gap-6 justify-center items-start h-[100vh]">
-            <h1 className="text-2xl">Education</h1>
-            <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  School
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  State
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Degree
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Course
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Gender
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-
-            <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 max-w-[30rem]">
-            <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  Start Year
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-
-              <div className="flex flex-col relative w-[100%]">
-                <span className="absolute bg-white text-gray-500 text-[12px] left-4 px-2">
-                  End Year
-                </span>
-                <input
-                  className="border bg-white mt-3 border-gray-300 rounded-md text-md px-6 max-w-[30rem] py-2"
-                  placeholder=""
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center text-gray-500 ttext-[13px] gap-3 mt-3">
-              <input type="checkbox" className="" placeholder="" />
-              <p>I am still schooling here</p>
-            </div>
-
-            <div className="flex mt-16 max-w-[30rem] items-center justify-between w-[100%]">
-              <button className="border border-red-400 py-2 px-6 text-[15px] text-red-500 rounded-md">
-                Add new Education
-              </button>
-              <button className=" bg-red-400 text-white py-2 px-20 text-[15px] rounded-md">
-                Next
-              </button>
-            </div>
-          </div>
+          </>
         )}
-      </RegisterationCard>
+
+        {tab === 'admin' && (
+          <>
+            <h1 className="text-2xl mb-6">Company Admin User</h1>
+            <div className="flex flex-col gap-4">
+              <input name="company_user" value={formData.company_user} onChange={handleChange} placeholder="Company User" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="user_phone" value={formData.user_phone} onChange={handleChange} placeholder="User Phone" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="user_email" value={formData.user_email} onChange={handleChange} placeholder="User Email" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="gender" value={formData.gender} onChange={handleChange} placeholder="Gender" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="user_position" value={formData.user_position} onChange={handleChange} placeholder="User Position" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="user_address" value={formData.user_address} onChange={handleChange} placeholder="User Address" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <button type="button" onClick={() => setTab('education')} className=" bg-red-400 text-white py-2 rounded-md">Next</button>
+            </div>
+          </>
+        )}
+
+        {tab === 'education' && (
+          <>
+            <h1 className="text-2xl mb-6">Education</h1>
+            <div className="flex flex-col gap-4">
+              <input name="school" value={formData.school} onChange={handleChange} placeholder="School" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="school_state" value={formData.school_state} onChange={handleChange} placeholder="School State" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="degree" value={formData.degree} onChange={handleChange} placeholder="Degree" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="course" value={formData.course} onChange={handleChange} placeholder="Course" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="start_year" value={formData.start_year} onChange={handleChange} placeholder="Start Year" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <input name="end_year" value={formData.end_year} onChange={handleChange} placeholder="End Year" className="border bg-white border-gray-300 rounded-md px-4 py-2" />
+              <div className="flex items-center">
+                <input type="checkbox" name="still_schooling" checked={formData.still_schooling} onChange={handleChange} className="mr-2" />
+                <label>I am still schooling here</label>
+              </div>
+              <button type="submit" className=" bg-red-400 text-white py-2 rounded-md">Submit</button>
+            </div>
+          </>
+        )}
+      </form>
     </div>
   );
 };

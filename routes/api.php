@@ -6,6 +6,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\WorkerVerificationController;
+use App\Http\Controllers\WorkerDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,13 @@ Route::post('company/signin', [CompanyController::class, 'signIn']);
 
 Route::post('worker/signup', [WorkerController::class, 'signUp']);
 Route::post('/worker/signin', [WorkerController::class, 'signIn']);
-Route::get('/worker/{id}', [WorkerController::class, 'show']);
-Route::put('/worker/{id}', [WorkerController::class, 'update']);
-Route::delete('/worker/{id}', [WorkerController::class, 'destroy']);
+// Route::get('/worker/{id}', [WorkerController::class, 'show']);
+// Route::put('/worker/{id}', [WorkerController::class, 'update']);
+// Route::delete('/worker/{id}', [WorkerController::class, 'destroy']);
+
+
+Route::post('/worker-details', [WorkerDetailsController::class, 'store']);
+
 
 
 Route::get('jobs', [JobController::class, 'index']);
